@@ -41,7 +41,7 @@ from lms.envs.common import (
     # indirectly accessed through the email opt-in API, which is
     # technically accessible through the CMS via legacy URLs.
     PROFILE_IMAGE_BACKEND, PROFILE_IMAGE_DEFAULT_FILENAME, PROFILE_IMAGE_DEFAULT_FILE_EXTENSION,
-    PROFILE_IMAGE_SECRET_KEY, PROFILE_IMAGE_MIN_BYTES, PROFILE_IMAGE_MAX_BYTES,
+    PROFILE_IMAGE_SECRET_KEY, PROFILE_IMAGE_MIN_BYTES, PROFILE_IMAGE_MAX_BYTES, ENABLE_CREDIT_ELIGIBILITY
 )
 from path import path
 from warnings import simplefilter
@@ -174,7 +174,7 @@ FEATURES = {
     'SHOW_BUMPER_PERIODICITY': 7 * 24 * 3600,
 
     # Enable credit eligibility feature
-    'ENABLE_CREDIT_ELIGIBILITY': False,
+    'ENABLE_CREDIT_ELIGIBILITY': ENABLE_CREDIT_ELIGIBILITY,
 
     # Can the visibility of the discussion tab be configured on a per-course basis?
     'ALLOW_HIDING_DISCUSSION_TAB': False,
@@ -247,7 +247,6 @@ LMS_BASE = None
 from lms.envs.common import (
     COURSE_KEY_PATTERN, COURSE_ID_PATTERN, USAGE_KEY_PATTERN, ASSET_KEY_PATTERN
 )
-
 
 ######################### CSRF #########################################
 
