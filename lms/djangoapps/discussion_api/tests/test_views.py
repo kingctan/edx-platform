@@ -203,6 +203,7 @@ class ThreadViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
             "comment_list_url": "http://testserver/api/discussion/v1/comments/?thread_id=test_thread",
             "endorsed_comment_list_url": None,
             "non_endorsed_comment_list_url": None,
+            "editable_fields": ["following", "voted"],
         }]
         self.register_get_threads_response(source_threads, page=1, num_pages=2)
         response = self.client.get(self.url, {"course_id": unicode(self.course.id)})
@@ -316,6 +317,7 @@ class ThreadViewSetCreateTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
             "comment_list_url": "http://testserver/api/discussion/v1/comments/?thread_id=test_thread",
             "endorsed_comment_list_url": None,
             "non_endorsed_comment_list_url": None,
+            "editable_fields": ["following", "raw_body", "title", "topic_id", "type", "voted"],
         }
         response = self.client.post(
             self.url,
@@ -406,6 +408,7 @@ class ThreadViewSetPartialUpdateTest(DiscussionAPIViewTestMixin, ModuleStoreTest
             "comment_list_url": "http://testserver/api/discussion/v1/comments/?thread_id=test_thread",
             "endorsed_comment_list_url": None,
             "non_endorsed_comment_list_url": None,
+            "editable_fields": ["following", "raw_body", "title", "topic_id", "type", "voted"],
         }
         response = self.client.patch(  # pylint: disable=no-member
             self.url,
@@ -548,6 +551,7 @@ class CommentViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
             "voted": True,
             "vote_count": 4,
             "children": [],
+            "editable_fields": ["voted"],
         }]
         self.register_get_thread_response({
             "id": self.thread_id,
@@ -701,6 +705,7 @@ class CommentViewSetCreateTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
             "voted": False,
             "vote_count": 0,
             "children": [],
+            "editable_fields": ["raw_body", "voted"],
         }
         response = self.client.post(
             self.url,
@@ -784,6 +789,7 @@ class CommentViewSetPartialUpdateTest(DiscussionAPIViewTestMixin, ModuleStoreTes
             "voted": False,
             "vote_count": 0,
             "children": [],
+            "editable_fields": ["raw_body", "voted"],
         }
         response = self.client.patch(  # pylint: disable=no-member
             self.url,

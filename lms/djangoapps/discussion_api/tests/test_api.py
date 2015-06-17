@@ -609,6 +609,7 @@ class GetThreadListTest(CommentsServiceMockMixin, UrlResetMixin, ModuleStoreTest
                 "comment_list_url": "http://testserver/api/discussion/v1/comments/?thread_id=test_thread_id_0",
                 "endorsed_comment_list_url": None,
                 "non_endorsed_comment_list_url": None,
+                "editable_fields": ["following", "voted"],
             },
             {
                 "id": "test_thread_id_1",
@@ -639,6 +640,7 @@ class GetThreadListTest(CommentsServiceMockMixin, UrlResetMixin, ModuleStoreTest
                 "non_endorsed_comment_list_url": (
                     "http://testserver/api/discussion/v1/comments/?thread_id=test_thread_id_1&endorsed=False"
                 ),
+                "editable_fields": ["following", "voted"],
             },
         ]
         self.assertEqual(
@@ -964,6 +966,7 @@ class GetCommentListTest(CommentsServiceMockMixin, ModuleStoreTestCase):
                 "voted": False,
                 "vote_count": 4,
                 "children": [],
+                "editable_fields": ["voted"],
             },
             {
                 "id": "test_comment_2",
@@ -983,6 +986,7 @@ class GetCommentListTest(CommentsServiceMockMixin, ModuleStoreTestCase):
                 "voted": False,
                 "vote_count": 7,
                 "children": [],
+                "editable_fields": ["voted"],
             },
         ]
         actual_comments = self.get_comment_list(
@@ -1202,6 +1206,7 @@ class CreateThreadTest(CommentsServiceMockMixin, UrlResetMixin, ModuleStoreTestC
             "comment_list_url": "http://testserver/api/discussion/v1/comments/?thread_id=test_id",
             "endorsed_comment_list_url": None,
             "non_endorsed_comment_list_url": None,
+            "editable_fields": ["following", "raw_body", "title", "topic_id", "type", "voted"],
         }
         self.assertEqual(actual, expected)
         self.assertEqual(
@@ -1367,6 +1372,7 @@ class CreateCommentTest(CommentsServiceMockMixin, UrlResetMixin, ModuleStoreTest
             "voted": False,
             "vote_count": 0,
             "children": [],
+            "editable_fields": ["raw_body", "voted"]
         }
         self.assertEqual(actual, expected)
         expected_url = (
@@ -1580,6 +1586,7 @@ class UpdateThreadTest(CommentsServiceMockMixin, UrlResetMixin, ModuleStoreTestC
             "comment_list_url": "http://testserver/api/discussion/v1/comments/?thread_id=test_thread",
             "endorsed_comment_list_url": None,
             "non_endorsed_comment_list_url": None,
+            "editable_fields": ["following", "raw_body", "title", "topic_id", "type", "voted"],
         }
         self.assertEqual(actual, expected)
         self.assertEqual(
@@ -1841,6 +1848,7 @@ class UpdateCommentTest(CommentsServiceMockMixin, UrlResetMixin, ModuleStoreTest
             "voted": False,
             "vote_count": 0,
             "children": [],
+            "editable_fields": ["raw_body", "voted"]
         }
         self.assertEqual(actual, expected)
         self.assertEqual(
