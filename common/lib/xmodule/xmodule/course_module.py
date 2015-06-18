@@ -11,6 +11,8 @@ from datetime import datetime
 import dateutil.parser
 from lazy import lazy
 
+from xmodule import course_metadata_utils
+from xmodule.course_metadata_utils import DEFAULT_START_DATE
 from xmodule.exceptions import UndefinedContext
 from xmodule.seq_module import SequenceDescriptor, SequenceModule
 from xmodule.graders import grader_from_conf
@@ -22,8 +24,6 @@ from xblock.fields import Scope, List, String, Dict, Boolean, Integer, Float
 from .fields import Date
 from django.utils.timezone import UTC
 
-from xmodule import course_metadata_utils
-DEFAULT_START_DATE = course_metadata_utils.DEFAULT_START_DATE
 
 log = logging.getLogger(__name__)
 
@@ -1408,6 +1408,14 @@ class CourseDescriptor(CourseFields, LicenseMixin, SequenceDescriptor):
 
     @property
     def number(self):
+        """
+        Returns this course's number.
+
+        This is a "number" in the sense of the "course numbers" that you see at
+        lots of universities. For example, given a course
+        "Intro to Computer Science" with the course key "edX/CS-101/2014", the
+        course number would be "CS-101"
+        """
         return course_metadata_utils.number_for_course_location(self.location)
 
     @property

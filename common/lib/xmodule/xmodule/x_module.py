@@ -26,16 +26,16 @@ from xblock.fields import (
 )
 from xblock.fragment import Fragment
 from xblock.runtime import Runtime, IdReader, IdGenerator
+from xmodule import course_metadata_utils
 from xmodule.fields import RelativeTime
-
 from xmodule.errortracker import exc_info_to_str
 from xmodule.modulestore.exceptions import ItemNotFoundError
+
 from opaque_keys.edx.keys import UsageKey
 from opaque_keys.edx.asides import AsideUsageKeyV1, AsideDefinitionKeyV1
 from xmodule.exceptions import UndefinedContext
 import dogstats_wrapper as dog_stats_api
 
-from xmodule import course_metadata_utils
 
 log = logging.getLogger(__name__)
 

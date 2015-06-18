@@ -26,25 +26,27 @@ class CourseOverviewTestCase(ModuleStoreTestCase):
     """
 
     TODAY = timezone.now()
-    LAST_MONTH = TODAY + datetime.timedelta(days=30)
+    LAST_MONTH = TODAY - datetime.timedelta(days=30)
     LAST_WEEK = TODAY - datetime.timedelta(days=7)
     NEXT_WEEK = TODAY + datetime.timedelta(days=7)
     NEXT_MONTH = TODAY + datetime.timedelta(days=30)
 
     def check_course_overview_against_course(self, course):
-        """Compares a CourseOverview object against its corresponding CourseDescriptor object
+        """
+        Compares a CourseOverview object against its corresponding
+        CourseDescriptor object.
 
         Specifically, given a course, test that data within the following three
         objects match each other:
          - the CourseDescriptor itself
-         - a CourseOverviewDescriptor that was newly constructed from _create_from_course
-         - a CourseOverviewDescriptor that was loaded from the MySQL database
+         - a CourseOverview that was newly constructed from _create_from_course
+         - a CourseOverview that was loaded from the MySQL database
         """
 
         def get_seconds_since_epoch(date_time):
             """
-            Returns the number of seconds between the Unix Epoch and the given datetime.
-            If the given datetime is None, return None.
+            Returns the number of seconds between the Unix Epoch and the given
+                datetime. If the given datetime is None, return None.
             """
             if date_time is None:
                 return None
@@ -183,7 +185,8 @@ class CourseOverviewTestCase(ModuleStoreTestCase):
     ))
     @ddt.unpack
     def test_course_overview_behavior(self, course_kwargs, modulestore_type):
-        """Tests if CourseOverviews and CourseDescriptors behave the same
+        """
+        Tests if CourseOverviews and CourseDescriptors behave the same
         by comparing pairs of them given a variety of scenarios.
 
         Arguments:

@@ -12,8 +12,8 @@ course; however, there are many cases in LMS where we need to load metadata
 for a number of courses simultaneously, which can cause very noticeable
 latency.
 Specifically, the endpoint /api/mobile_api/v0.5/users/{username}/course_enrollments
-took an average of 900 ms, and all it does is generate a limited amount of data for
-no more than a few dozen courses per user.
+took an average of 900 ms, and all it does is generate a limited amount of data
+for no more than a few dozen courses per user.
 
 In this app we declare the model CourseOverview, which caches course metadata
 and a MySQL table and allows very quick access to it (according to NewRelic,

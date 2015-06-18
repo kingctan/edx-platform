@@ -158,6 +158,11 @@ class CourseOverview(django.db.models.Model):
     def number(self):
         """
         Returns this course's number.
+
+        This is a "number" in the sense of the "course numbers" that you see at
+        lots of universities. For example, given a course
+        "Intro to Computer Science" with the course key "edX/CS-101/2014", the
+        course number would be "CS-101"
         """
         return course_metadata_utils.number_for_course_location(self.location)
 
@@ -213,7 +218,7 @@ class CourseOverview(django.db.models.Model):
 
     def end_datetime_text(self, format_string="SHORT_DATE"):
         """
-        Returns the end date or date_time for the course formatted as a string.
+        Returns the end date or datetime for the course formatted as a string.
         """
         return course_metadata_utils.course_end_datetime_text(
             self.end,
