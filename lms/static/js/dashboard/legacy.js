@@ -80,19 +80,6 @@
             return properties;
         }
 
-        function toggleExpandMessage(event) {
-            var course = $(event.target).closest('.message-upsell').find('.action-upgrade').data('course-id');
-
-            event.preventDefault();
-
-            $(this).closest('.message.is-expandable').toggleClass('is-expanded');
-
-            window.analytics.track('edx.bi.dashboard.upgrade_copy.expanded', {
-                category: 'upgrade',
-                label: course
-            });
-        }
-
         function toggleCourseActionsDropdown(event) {
             var dashboard_index = $(this).data('dashboard-index');
 
