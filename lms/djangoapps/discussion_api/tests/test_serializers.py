@@ -151,6 +151,7 @@ class ThreadSerializerSerializationTest(SerializerTestMixin, ModuleStoreTestCase
 
     def test_basic(self):
         thread = {
+            "type": "thread",
             "id": "test_thread",
             "course_id": unicode(self.course.id),
             "commentable_id": "test_topic",
@@ -260,6 +261,7 @@ class CommentSerializerTest(SerializerTestMixin, ModuleStoreTestCase):
 
     def test_basic(self):
         comment = {
+            "type": "comment",
             "id": "test_comment",
             "thread_id": "test_thread",
             "user_id": str(self.author.id),

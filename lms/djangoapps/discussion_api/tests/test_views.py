@@ -158,6 +158,7 @@ class ThreadViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
     def test_basic(self):
         self.register_get_user_response(self.user, upvoted_ids=["test_thread"])
         source_threads = [{
+            "type": "thread",
             "id": "test_thread",
             "course_id": unicode(self.course.id),
             "commentable_id": "test_topic",
@@ -518,6 +519,7 @@ class CommentViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
     def test_basic(self):
         self.register_get_user_response(self.user, upvoted_ids=["test_comment"])
         source_comments = [{
+            "type": "comment",
             "id": "test_comment",
             "thread_id": self.thread_id,
             "parent_id": None,

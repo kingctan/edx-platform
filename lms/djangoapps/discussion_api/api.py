@@ -17,7 +17,7 @@ from opaque_keys.edx.locator import CourseKey
 from courseware.courses import get_course_with_access
 from discussion_api.forms import CommentActionsForm, ThreadActionsForm
 from discussion_api.pagination import get_paginated_data
-from discussion_api.permissions import can_delete, get_comment_editable_fields, get_thread_editable_fields
+from discussion_api.permissions import can_delete, get_editable_fields
 from discussion_api.serializers import CommentSerializer, ThreadSerializer, get_context
 from django_comment_client.base.views import (
     THREAD_CREATED_EVENT_NAME,
@@ -340,11 +340,12 @@ def get_comment_list(request, thread_id, endorsed, page, page_size):
     return get_paginated_data(request, results, page, num_pages)
 
 
-def _check_editable_fields(editable_fields, data):
+def _check_editable_fields(cc_content, data, context):
     """
     Raise ValidationError if the given update data contains a field that is not
     in editable_fields.
     """
+    editable_fields = get_editable_fields(cc_content, context)
     non_editable_errors = {
         field: ["This field is not editable."]
         for field in data.keys()
@@ -486,7 +487,7 @@ def update_thread(request, thread_id, update_data):
         detail.
     """
     cc_thread, context = _get_thread_and_context(request, thread_id)
-    _check_editable_fields(get_thread_editable_fields(cc_thread, context), update_data)
+    _check_editable_fields(cc_thread, update_data, context)
     serializer = ThreadSerializer(cc_thread, data=update_data, partial=True, context=context)
     actions_form = ThreadActionsForm(update_data)
     if not (serializer.is_valid() and actions_form.is_valid()):
@@ -529,7 +530,7 @@ def update_comment(request, comment_id, update_data):
           is empty or thread_id is included)
     """
     cc_comment, context = _get_comment_and_context(request, comment_id)
-    _check_editable_fields(get_comment_editable_fields(cc_comment, context), update_data)
+    _check_editable_fields(cc_comment, update_data, context)
     serializer = CommentSerializer(cc_comment, data=update_data, partial=True, context=context)
     actions_form = CommentActionsForm(update_data)
     if not (serializer.is_valid() and actions_form.is_valid()):

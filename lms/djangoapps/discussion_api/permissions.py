@@ -3,43 +3,52 @@ Discussion API permission logic
 """
 
 
-def _is_user_author_or_privileged(cc_content, context):
+def _is_author(cc_content, context):
     """
-    Check if the user is the author of a content object or a privileged user.
-
-    Returns:
-        Boolean
+    Return True if the requester authored the given content, False otherwise
     """
-    return (
-        context["is_requester_privileged"] or
-        context["cc_requester"]["id"] == cc_content["user_id"]
-    )
+    return context["cc_requester"]["id"] == cc_content["user_id"]
 
 
-def get_thread_editable_fields(cc_thread, context):
+def _is_author_or_privileged(cc_content, context):
     """
-    Get the list of editable fields for the given thread in the given context
+    Return True if the requester authored the given content or is a privileged
+    user, False otherwise
     """
-    ret = {"following", "voted"}
-    if _is_user_author_or_privileged(cc_thread, context):
-        ret |= {"topic_id", "type", "title", "raw_body"}
-    return ret
+    return context["is_requester_privileged"] or _is_author(cc_content, context)
 
 
-def get_comment_editable_fields(cc_comment, context):
+def get_editable_fields(cc_content, context):
     """
-    Get the list of editable fields for the given comment in the given context
-
-    cc_comment can be None to get permissions for a newly created comment
+    Return the set of fields that the requester can edit on the given content
     """
+    # Shared fields
     ret = {"voted"}
-    if _is_user_author_or_privileged(cc_comment, context):
+    if _is_author_or_privileged(cc_content, context):
         ret |= {"raw_body"}
-    if _is_user_author_or_privileged(context["thread"], context):
+
+    # Thread fields
+    if cc_content["type"] == "thread":
+        ret |= {"following"}
+        if _is_author_or_privileged(cc_content, context):
+            ret |= {"topic_id", "type", "title"}
+
+    # Comment fields
+    if (
+            cc_content["type"] == "comment" and (
+                context["is_requester_privileged"] or (
+                    _is_author(context["thread"], context) and
+                    context["thread"]["thread_type"] == "question"
+                )
+            )
+    ):
         ret |= {"endorsed"}
+
     return ret
 
 
 def can_delete(cc_content, context):
-    """Returns True iff the requester is allowed to delete the given content"""
-    return _is_user_author_or_privileged(cc_content, context)
+    """
+    Return True if the requester can delete the given content, False otherwise
+    """
+    return _is_author_or_privileged(cc_content, context)
