@@ -4,7 +4,9 @@ Test cases for Call Stack Manager
 from mock import patch
 from django.db import models
 from django.test import TestCase
+
 from openedx.core.djangoapps.call_stack_manager import donottrack, CallStackManager, CallStackMixin
+from openedx.core.djangoapps.call_stack_manager.core import Glb
 
 
 class ModelMixinCSM(CallStackMixin, models.Model):
@@ -113,6 +115,18 @@ class TestingCallStackManager(TestCase):
     1. Tests CallStackManager QuerySetAPI functionality
     2. Tests @donottrack decorator
     """
+    def setUp(self):
+        """ Drops 'call_stack_manager' for the sake of testing
+        """
+        self.regular_exps = Glb.REGULAR_EXPS
+        Glb.REGULAR_EXPS = []
+        super(TestingCallStackManager, self).setUp()
+
+    def tearDown(self):
+        """ Adds 'call_stack_manager' after tests are done
+        """
+        Glb.REGULAR_EXPS = self.regular_exps
+        super(TestingCallStackManager, self).tearDown()
 
     @patch('openedx.core.djangoapps.call_stack_manager.core.log.info')
     def test_save(self, log_capt):

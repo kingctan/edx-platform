@@ -38,29 +38,30 @@ from django.db.models import Manager
 
 log = logging.getLogger(__name__)
 
-# Module Level variables
-# dictionary which stores call stacks.
-# { "ModelClasses" : [ListOfFrames]}
-# Frames - ('FilePath','LineNumber','Context')
-# ex. {"<class 'courseware.models.StudentModule'>" : [[(file,line number,context),(---,---,---)],
-#                                                     [(file,line number,context),(---,---,---)]]}
-STACK_BOOK = collections.defaultdict(list)
 
-# filter to trickle down call stacks
-EXCLUDE_REGEX = ['^.*python2.7.*$', '^.*<exec_function>.*$', '^.*exec_code_object.*$', '^.*edxapp/src.*$',
-                 '^.*call_stack_manager(?!/tests).*$']
-REGULAR_EXPS = [re.compile(x) for x in EXCLUDE_REGEX]
-
-# Variable which decides whether to track calls in the function or not. Do it by default.
-TRACK_FLAG = True
-
-# List keeping track of Model classes not be tracked for special cases
-# usually cases where we know that the function is calling Model classes.
-HALT_TRACKING = []
+class Glb(object):
+    # list of regular expressions to be 
+    REGULAR_EXPS = [re.compile(x) for x in ['^.*python2.7.*$', '^.*<exec_function>.*$', '^.*exec_code_object.*$',
+                                            '^.*edxapp/src.*$', '^.*call_stack_manager.*$']]
+    
+    # Variable which decides whether to track calls in the function or not. Do it by default.
+    TRACK_FLAG = True
+    
+    # List keeping track of Model classes not be tracked for special cases
+    # usually cases where we know that the function is calling Model classes.
+    HALT_TRACKING = []
+    
+    # Module Level variables
+    # dictionary which stores call stacks.
+    # { "ModelClasses" : [ListOfFrames]}
+    # Frames - ('FilePath','LineNumber','Context')
+    # ex. {"<class 'courseware.models.StudentModule'>" : [[(file,line number,context),(---,---,---)],
+    #                                                    [(file,line number,context),(---,---,---)]]}
+    STACK_BOOK = collections.defaultdict(list)
 
 
 def capture_call_stack(current_model):
-    """ logs customised call stacks in global dictionary `STACK_BOOK`, and logs it.
+    """ logs customised call stacks in global dictionary `Glb.STACK_BOOK`, and logs it.
 
     Args:
         current_model - Name of the model class
@@ -74,12 +75,12 @@ def capture_call_stack(current_model):
                         frame[1][6:],
                         frame[2][3:])
                        for frame in [stack.replace("\n", "").strip().split(',') for stack in traceback.format_stack()]
-                       if not any(reg.match(frame[0]) for reg in REGULAR_EXPS)]
+                       if not any(reg.match(frame[0]) for reg in Glb.REGULAR_EXPS)]
 
     # avoid duplication.
-    if temp_call_stack not in STACK_BOOK[current_model] and TRACK_FLAG \
-            and not any(issubclass(current_model, cls) for cls in HALT_TRACKING):
-        STACK_BOOK[current_model].append(temp_call_stack)
+    if temp_call_stack not in Glb.STACK_BOOK[current_model] and Glb.TRACK_FLAG \
+            and not issubclass(current_model, tuple(Glb.HALT_TRACKING)):
+        Glb.STACK_BOOK[current_model].append(temp_call_stack)
         log.info("logging new call stack for %s:\n %s", current_model, temp_call_stack)
 
 
@@ -132,16 +133,14 @@ def donottrack(*classes_not_to_be_tracked):
                 wrapper function i.e. wrapper
             """
             if len(classes_not_to_be_tracked) == 0:
-                global TRACK_FLAG  # pylint: disable=W0603
-                current_flag = TRACK_FLAG
-                TRACK_FLAG = False
+                current_flag = Glb.TRACK_FLAG
+                Glb.TRACK_FLAG = False
                 function(*args, **kwargs)
-                TRACK_FLAG = current_flag
+                Glb.TRACK_FLAG = current_flag
             else:
-                global HALT_TRACKING  # pylint: disable=W0603
-                current_halt_track = HALT_TRACKING
-                HALT_TRACKING = classes_not_to_be_tracked
+                current_halt_track = Glb.HALT_TRACKING
+                Glb.HALT_TRACKING = classes_not_to_be_tracked
                 function(*args, **kwargs)
-                HALT_TRACKING = current_halt_track
+                Glb.HALT_TRACKING = current_halt_track
         return wrapper
     return real_donottrack
