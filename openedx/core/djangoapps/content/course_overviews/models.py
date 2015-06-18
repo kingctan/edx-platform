@@ -119,9 +119,7 @@ class CourseOverview(django.db.models.Model):
         course_overview = None
         try:
             course_overview = CourseOverview.objects.get(id=course_id)
-            # Cache hit! Just return the overview
         except CourseOverview.DoesNotExist:
-            # Cache miss. Load entire course and create a CourseOverview from it
             store = modulestore()
             with store.bulk_operations(course_id):
                 course = store.get_course(course_id)

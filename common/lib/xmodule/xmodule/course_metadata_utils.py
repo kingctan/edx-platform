@@ -1,4 +1,5 @@
-"""Simple utility functions that operate on course metadata.
+"""
+Simple utility functions that operate on course metadata.
 
 This is a place to put simple functions that operate on course metadata. It
 allows us to share code between the CourseDescriptor and CourseOverview
@@ -125,13 +126,13 @@ def _datetime_to_string(date_time, format_string, strftime_localized):
     Arguments:
         date_time (datetime): the datetime to be formatted
         format_string (str): the date format type, as passed to strftime
-        strftime_localized ((datetime, str) -> str): a localized string
+        strftime_localized ((datetime, str) -> str): a nm localized string
             formatting function
     """
     # TODO: Is manually appending UTC really the right thing to do here? What if date_time isn't UTC?
     result = strftime_localized(date_time, format_string)
     return (
-        result + u" UTC" if format_string == "DATE_TIME"
+        result + u" UTC" if format_string != "SHORT_DATE"
         else result
     )
 

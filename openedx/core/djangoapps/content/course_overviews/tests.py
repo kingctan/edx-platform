@@ -112,11 +112,10 @@ class CourseOverviewTestCase(ModuleStoreTestCase):
         # Other values to test
         # Note: we test the start and end attributes here instead of in
         # fields_to_test, because I ran into trouble while testing datetimes
-        # for equality. For Mongo Draft courses, start and end times ended up
-        # being fractions of a second different between course_value and
-        # cache_miss_value (implying a problem with the modulestore, not with
-        # this app). So, as a workaround, we simply test if the start and end
-        # times are the same number of seconds from the Unix epoch.
+        # for equality. When writing and reading dates from databases, the
+        # resulting values are often off by fractions of a second. So, as a
+        # workaround, we simply test if the start and end times are the same
+        # number of seconds from the Unix epoch.
         others_to_test = [(
             course_image_url(course),
             course_overview_cache_miss.course_image_url,
