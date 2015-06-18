@@ -458,6 +458,16 @@ class ThreadSerializerDeserializationTest(CommentsServiceMockMixin, UrlResetMixi
                 {field: ["This field is required."]}
             )
 
+    @ddt.data("", " ")
+    def test_create_empty_string(self, value):
+        data = self.minimal_data.copy()
+        data.update({field: value for field in ["topic_id", "title", "raw_body"]})
+        serializer = ThreadSerializer(data=data, context=get_context(self.course, self.request))
+        self.assertEqual(
+            serializer.errors,
+            {field: ["This field is required."] for field in ["topic_id", "title", "raw_body"]}
+        )
+
     def test_create_type(self):
         self.register_post_thread_response({"id": "test_id"})
         data = self.minimal_data.copy()
