@@ -40,17 +40,19 @@ log = logging.getLogger(__name__)
 
 
 class Glb(object):
-    # list of regular expressions to be 
+    """
+    class of static variables required for call_stack_manager
+    """
+    # list of regular expressions acting as filters
     REGULAR_EXPS = [re.compile(x) for x in ['^.*python2.7.*$', '^.*<exec_function>.*$', '^.*exec_code_object.*$',
                                             '^.*edxapp/src.*$', '^.*call_stack_manager.*$']]
-    
     # Variable which decides whether to track calls in the function or not. Do it by default.
     TRACK_FLAG = True
-    
+
     # List keeping track of Model classes not be tracked for special cases
     # usually cases where we know that the function is calling Model classes.
     HALT_TRACKING = []
-    
+
     # Module Level variables
     # dictionary which stores call stacks.
     # { "ModelClasses" : [ListOfFrames]}
@@ -66,7 +68,6 @@ def capture_call_stack(current_model):
     Args:
         current_model - Name of the model class
     """
-
     # holds temporary callstack
     # frame[0][6:-1] -> File name along with path
     # frame[1][6:] -> Line Number
